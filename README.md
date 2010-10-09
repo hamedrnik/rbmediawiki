@@ -20,6 +20,10 @@ For instance, to retrieve the Iran page from persian wikipedia:
 * rubygems
 * xml-simple
 
+## CONTACT
+you can find me in http://free8beautifullife.wordpress.com/ or contact me with
+"iceage2098" email in gmail.com
+
 ## LICENSE
 Framework for developing bots and mediawiki tools in ruby.
     Copyright (C) 2010  Hamed Ramezanian

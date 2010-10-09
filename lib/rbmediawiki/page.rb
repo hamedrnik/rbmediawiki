@@ -39,7 +39,7 @@ class Page
     def put(text, summary = nil, minor = true, bot = true, password = nil)
         #require login
         @site.login(password)
-        result = @site.query_prop_info(@normtitle, nil, 'edit') 
+        result = @site.query_prop_info(@normtitle, nil, 'edit')
         token = result['query']['pages']['page']['edittoken']
         result = @site.edit(@normtitle, nil, text, token, summary, minor, nil, bot)
         if result.key?('error')
@@ -56,7 +56,7 @@ class Page
         #require login
         @site.login
         puts text
-        result = @site.query_prop_info(@normtitle, nil, 'edit')    
+        result = @site.query_prop_info(@normtitle, nil, 'edit')
         token = result['query']['pages']['page']['edittoken']
         result = @site.edit(@normtitle, nil, text, token, summary, minor, nil, bot, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, text)
         if result.key?('error')
@@ -71,7 +71,7 @@ class Page
     def prepend(text, summary = nil, minor = true, bot = true)
         #require login
         @site.login
-        result = @site.query_prop_info(@normtitle, nil, 'edit')    
+        result = @site.query_prop_info(@normtitle, nil, 'edit')
         token = result['query']['pages']['page']['edittoken']
         result = @site.edit(@normtitle, nil, text, token, summary, minor, nil, bot, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, text)
         if result.key?('error')
@@ -82,14 +82,14 @@ class Page
     end
 
     #adds a section to a page
-    #same as #append, but is a section what is appended. 
+    #same as #append, but is a section what is appended.
     #title is the title of the new section
     def addsection(text, title, minor = false, bot = true)
         #require login
         @site.login
-        result = @site.query_prop_info(@normtitle, nil, 'edit')    
+        result = @site.query_prop_info(@normtitle, nil, 'edit')
         token = result['query']['pages']['page']['edittoken']
-        result = @site.edit(@normtitle, section, text, token, title, minor, nil, bot) 
+        result = @site.edit(@normtitle, section, text, token, title, minor, nil, bot)
         if result.key?('error')
             raise RbmediawikiError, "#{title}: "+result['error']['code']
         else
@@ -97,14 +97,14 @@ class Page
         end
     end
 
-    #moves a page 
+    #moves a page
     # * reason: reason or summary
     # * movetalk: move talk pages too (default->true)
     # * noredirect: don't leave a redirect (default->nil)
-    def move(to, reason = nil, movetalk = true, noredirect = nil) 
+    def move(to, reason = nil, movetalk = true, noredirect = nil)
         #require login
         @site.login
-        result = @site.query_prop_info(@normtitle, nil, 'move') 
+        result = @site.query_prop_info(@normtitle, nil, 'move')
         token = result['query']['pages']['page']['movetoken']
         result = @site.move(@normtitle, nil, to, token, reason, movetalk, nil, noredirect)
         if result.key?('error')
@@ -113,16 +113,16 @@ class Page
             return true
         end
     end
-    
+
     #protects a page.
     #reason is the reason for the protection
     #expiry is a timescamp (default is infinite).
     #protections is the action and group that can perform that action, separated
     #by pipes. Exapmple "edit=sysop|move=autoconfirmed".Default is edit=sysop|move=sysop
-    def protect(reason = nil, expiry = 'infinite', protections = 'edit=sysop|move=sysop') 
+    def protect(reason = nil, expiry = 'infinite', protections = 'edit=sysop|move=sysop')
         #require login
         @site.login
-        result = @site.query_prop_info(@normtitle, nil, 'protect') 
+        result = @site.query_prop_info(@normtitle, nil, 'protect')
         token = result['query']['pages']['page']['protecttoken']
         result = @site.protect(@normtitle, token, protections, expiry, reason)
         if result.key?('error')
@@ -131,10 +131,10 @@ class Page
             return true
         end
     end
-    
+
     #semipotects a page.
     #is the same as protect, but default for protections is "edit=autoconfirmed|move=autoconfirmed"
-    def semiprotect(reason = nil, expiry = 'infinite') 
+    def semiprotect(reason = nil, expiry = 'infinite')
         protect(reason, expiry, 'edit=autoconfirmed|move=autoconfirmed')
         #possible errors: user doesn't have privileges
     end
@@ -144,23 +144,23 @@ class Page
     #returns true if success, raises NoPage if page doesn't exist
     def delete(reason="")
         @site.login
-        result = @site.query_prop_info(@normtitle, nil, 'delete') 
+        result = @site.query_prop_info(@normtitle, nil, 'delete')
         token = result['query']['pages']['page']['deletetoken']
         result = @site.delete(@normtitle, nil, token, reason)
         if result.key?('error')
             raise RbmediawikiError, "#{@title}: "+result['error']['code']
         else
-            return true    
+            return true
         end
     end
 
     #undeletes a page.
     #reason: reason for deleting
     #returns true if success, false if there aren't deleted revisions
-    
+
     def undelete(reason="")
         @site.login
-        result = @site.query_list_deletedrevs(@normtitle, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 'token') 
+        result = @site.query_list_deletedrevs(@normtitle, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 'token')
         if result.key?('error')
             raise RbmediawikiError, "#{@title}: "+result['error']['code']
         end
@@ -169,13 +169,13 @@ class Page
         end
         token = result['query']['deletedrevs']['page']['token']
         result = @site.undelete(@normtitle, token, reason)
-        return true    
+        return true
     end
-   
+
     #rollback (revert) editr by user. Summary can be given
     def rollback(user = nil, summary = nil, markbot = nil)
         @site.login
-        result = @site.query_prop_revisions(@normtitle, nil, nil, nil, nil, nil, nil, nil, user, nil, nil, nil, nil, 'rollback') 
+        result = @site.query_prop_revisions(@normtitle, nil, nil, nil, nil, nil, nil, nil, user, nil, nil, nil, nil, 'rollback')
         #Page exists?
         if result['query']['pages']['page'].key?('missing')
             raise NoPage, "Page [[#{@title}]] does not exist"
@@ -196,7 +196,7 @@ class Page
         if result.key?('error')
             raise RbmediawikiError, "#{@title}: "+result['error']['code']
         else
-            return true    
+            return true
         end
     end
 
@@ -210,7 +210,7 @@ class Page
         end
         if result['query']['pages']['page'].key?('missing')
             raise NoPage, "Page [[#{@title}]] does not exist"
- 
+
         else
             return result['query']['pages']['page']['protection']['pr']
         end
@@ -219,7 +219,7 @@ class Page
 
     #get interwiki links
     #min is the minimum number of elements to return, lllimit is the number of
-    #elements to request from the API in each iteration. The method will 
+    #elements to request from the API in each iteration. The method will
     #request elements until it has at least min elements.
     #returns false if there aren't any, and raises NoPage if page doesn't exist
     def get_interwikis(min = nil, lllimit = 500)
@@ -248,11 +248,11 @@ class Page
         }
         return iws
     end
-    
-#    
+
+#
     #gets image links of a page
     #min is the minimum number of elements to return, imlimit is the number of
-    #elements to request from the API in each iteration. The method will 
+    #elements to request from the API in each iteration. The method will
     #request elements until it has at least min elements.
     #returns false if there aren't any, and raises NoPage if page doesn't exist
     def get_images(min = nil, imlimit = 500)
@@ -284,7 +284,7 @@ class Page
     end
     #gets categories used in a page
     #min is the minimum number of elements to return, cllimit is the number of
-    #elements to request from the API in each iteration. The method will 
+    #elements to request from the API in each iteration. The method will
     #request elements until it has at least min elements.
     #clshow can be "hidden" or "!hidden". Default shows both
     #if sortkey is true will return the sortkey. Default is true
@@ -293,7 +293,7 @@ class Page
         cls = Array.new
         count = 0
 
-        if sortkey 
+        if sortkey
             clprop = "sortkey"
         end
 
@@ -344,7 +344,7 @@ class Page
     #not working in r1.9
 #    #gets templates used in a page
 #    #min is the minimum number of elements to return, tllimit is the number of
-#    #elements to request from the API in each iteration. The method will 
+#    #elements to request from the API in each iteration. The method will
 #    #request elements until it has at least min elements.
 #    #returns false if there aren't any, and raises NoPage if page doesn't exist
 #    def get_templates(min = nil, tllimit = 500)
@@ -368,12 +368,12 @@ class Page
 #        else return false
 #        end
 #    end
-#    
+#
 
 #
 #    #gets external links used in a page
 #    #min is the minimum number of elements to return, ellimit is the number of
-#    #elements to request from the API in each iteration. The method will 
+#    #elements to request from the API in each iteration. The method will
 #    #request elements until it has at least min elements.
 #    #returns false if there aren't any, and raises NoPage if page doesn't exist
 #    def get_external_links(min = nil, ellimit = 500)
@@ -397,17 +397,17 @@ class Page
 #        else return false
 #        end
 #    end
-#    
+#
     #gets backlinks (what links here) used in a page
     #min is the minimum number of elements to return, bllimit is the number of
-    #elements to request from the API in each iteration. The method will 
+    #elements to request from the API in each iteration. The method will
     #request elements until it has at least min elements.
     #returns false if there aren't any, and raises NoPage if page doesn't exist
 
 
 #    #gets deleted revisions of a page
 #    #min is the minimum number of elements to return, drlimit is the number of
-#    #elements to request from the API in each iteration. The method will 
+#    #elements to request from the API in each iteration. The method will
 #    #request elements until it has at least min elements.
 #    #returns false if there aren't any
 #    def get_deletedrevs(min = nil, drlimit = 500)
@@ -434,7 +434,7 @@ class Page
 #    #gets pages in which this page is embedded (or transcluded). Returns a list
 #    #of Page elements
 #    #min is the minimum number of elements to return, eilimit is the number of
-#    #elements to request from the API in each iteration. The method will 
+#    #elements to request from the API in each iteration. The method will
 #    #request elements until it has at least min elements.
 #    #returns false if there aren't any, and raises NoPage if page doesn't exist
 #    def get_embeddedin(min = nil, eilimit = 500)
@@ -482,3 +482,4 @@ end
 
 class RbmediawikiError < RuntimeError
 end
+
